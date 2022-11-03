@@ -93,7 +93,7 @@ const FIREBASE_AUTH_BASE_URL_FORMAT =
 
 /** Firebase Auth base URlLformat when using the auth emultor. */
 const FIREBASE_AUTH_EMULATOR_BASE_URL_FORMAT =
-  'http://{host}/identitytoolkit.googleapis.com/{version}/projects/{projectId}{api}';
+  '{host}/identitytoolkit.googleapis.com/{version}/projects/{projectId}{api}';
 
 /** The Firebase Auth backend multi-tenancy base URL format. */
 const FIREBASE_AUTH_TENANT_URL_FORMAT = FIREBASE_AUTH_BASE_URL_FORMAT.replace(
