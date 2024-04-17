@@ -2146,21 +2146,21 @@ export class PasswordPolicyAuthConfig implements PasswordPolicyConfig {
           );
         }
       }
-      if (typeof options.constraints.requireUppercase !== undefined &&
+      if (typeof options.constraints.requireUppercase !== 'undefined' &&
         !validator.isBoolean(options.constraints.requireUppercase)) {
         throw new FirebaseAuthError(
           AuthClientErrorCode.INVALID_CONFIG,
           '"PasswordPolicyConfig.constraints.requireUppercase" must be a boolean.',
         );
       }
-      if (typeof options.constraints.requireLowercase !== undefined &&
+      if (typeof options.constraints.requireLowercase !== 'undefined' &&
         !validator.isBoolean(options.constraints.requireLowercase)) {
         throw new FirebaseAuthError(
           AuthClientErrorCode.INVALID_CONFIG,
           '"PasswordPolicyConfig.constraints.requireLowercase" must be a boolean.',
         );
       }
-      if (typeof options.constraints.requireNonAlphanumeric !== undefined &&
+      if (typeof options.constraints.requireNonAlphanumeric !== 'undefined' &&
         !validator.isBoolean(options.constraints.requireNonAlphanumeric)) {
         throw new FirebaseAuthError(
           AuthClientErrorCode.INVALID_CONFIG,
@@ -2168,27 +2168,20 @@ export class PasswordPolicyAuthConfig implements PasswordPolicyConfig {
             ' must be a boolean.',
         );
       }
-      if (typeof options.constraints.requireNumeric !== undefined &&
+      if (typeof options.constraints.requireNumeric !== 'undefined' &&
         !validator.isBoolean(options.constraints.requireNumeric)) {
         throw new FirebaseAuthError(
           AuthClientErrorCode.INVALID_CONFIG,
           '"PasswordPolicyConfig.constraints.requireNumeric" must be a boolean.',
         );
       }
-      if (!validator.isNumber(options.constraints.minLength)) {
+      if (typeof options.constraints.minLength === 'undefined') {
+        options.constraints.minLength = 6;
+      } else if (!validator.isNumber(options.constraints.minLength)) {
         throw new FirebaseAuthError(
           AuthClientErrorCode.INVALID_CONFIG,
           '"PasswordPolicyConfig.constraints.minLength" must be a number.',
         );
-      }
-      if (!validator.isNumber(options.constraints.maxLength)) {
-        throw new FirebaseAuthError(
-          AuthClientErrorCode.INVALID_CONFIG,
-          '"PasswordPolicyConfig.constraints.maxLength" must be a number.',
-        );
-      }
-      if (options.constraints.minLength === undefined) {
-        options.constraints.minLength = 6;
       } else {
         if (!(options.constraints.minLength >= 6
           && options.constraints.minLength <= 30)) {
@@ -2199,8 +2192,13 @@ export class PasswordPolicyAuthConfig implements PasswordPolicyConfig {
           );
         }
       }
-      if (options.constraints.maxLength === undefined) {
+      if (typeof options.constraints.maxLength === 'undefined') {
         options.constraints.maxLength = 4096;
+      } else if (!validator.isNumber(options.constraints.maxLength)) {
+        throw new FirebaseAuthError(
+          AuthClientErrorCode.INVALID_CONFIG,
+          '"PasswordPolicyConfig.constraints.maxLength" must be a number.',
+        );
       } else {
         if (!(options.constraints.maxLength >= options.constraints.minLength &&
           options.constraints.maxLength <= 4096)) {
@@ -2280,4 +2278,51 @@ export interface CustomStrengthOptionsAuthServerConfig {
   containsNonAlphanumericCharacter?: boolean;
   minPasswordLength?: number;
   maxPasswordLength?: number;
+}
+
+/**
+ * The email privacy configuration of a project or tenant.
+ */
+export interface EmailPrivacyConfig {
+  /**
+   * Whether enhanced email privacy is enabled.
+   */
+  enableImprovedEmailPrivacy?: boolean;
+}
+
+/**
+ * Defines the EmailPrivacyAuthConfig class used for validation.
+ *
+ * @internal
+ */
+export class EmailPrivacyAuthConfig {
+  public static validate(options: EmailPrivacyConfig): void {
+    if (!validator.isNonNullObject(options)) {
+      throw new FirebaseAuthError(
+        AuthClientErrorCode.INVALID_CONFIG,
+        '"EmailPrivacyConfig" must be a non-null object.',
+      );
+    }
+
+    const validKeys = {
+      enableImprovedEmailPrivacy: true,
+    };
+
+    for (const key in options) {
+      if (!(key in validKeys)) {
+        throw new FirebaseAuthError(
+          AuthClientErrorCode.INVALID_CONFIG,
+          `"${key}" is not a valid "EmailPrivacyConfig" parameter.`,
+        );
+      }
+    }
+
+    if (typeof options.enableImprovedEmailPrivacy !== 'undefined'
+      && !validator.isBoolean(options.enableImprovedEmailPrivacy)) {
+      throw new FirebaseAuthError(
+        AuthClientErrorCode.INVALID_CONFIG,
+        '"EmailPrivacyConfig.enableImprovedEmailPrivacy" must be a valid boolean value.',
+      );
+    }
+  }
 }
